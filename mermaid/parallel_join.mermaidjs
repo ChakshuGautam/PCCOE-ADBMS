@@ -1,0 +1,44 @@
+graph TD
+    B{Data Type?}
+    B -->|Time Series| C{High Data Skew?}
+    B -->|OLAP| D{Multidimensional Sorting?}
+    B -->|Other| E{Known Data Distribution?}
+    C -->|Yes| F[Parallel External Sort-Merge]
+    C -->|No| G{Real-time Sorting Needed?}
+    G -->|Yes| F
+    G -->|No| H[Range-Partitioning Sort]
+    D -->|Yes| I{Frequent Updates?}
+    D -->|No| J{Aligned with Dimension Hierarchy?}
+    I -->|Yes| F
+    I -->|No| K{Extreme Data Volume?}
+    J -->|Yes| H
+    J -->|No| F
+    K -->|Yes| F
+    K -->|No| L{Complex Query Patterns?}
+    L -->|Yes| F
+    L -->|No| H
+    E -->|Yes| M{Even Distribution?}
+    E -->|No| F
+    M -->|Yes| N{Large Dataset?}
+    M -->|No| F
+    N -->|No| H
+    N -->|Yes| O{High Network Bandwidth?}
+    O -->|Yes| H
+    O -->|No| F
+    H --> P{Dynamic Data?}
+    P -->|Yes| Q{Frequent Large Range Queries?}
+    P -->|No| R{Frequent Sorting?}
+    Q -->|Yes| H
+    Q -->|No| F
+    R -->|Yes| F
+    R -->|No| H
+    F --> S{One-time Operation?}
+    S -->|Yes| T{Even Distribution?}
+    S -->|No| F
+    T -->|Yes| H
+    T -->|No| F
+
+    classDef parallelExternal fill:#ff9999,stroke:#333,stroke-width:2px;
+    classDef rangePartitioning fill:#99ccff,stroke:#333,stroke-width:2px;
+    class F parallelExternal;
+    class H rangePartitioning;
